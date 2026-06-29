@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 翻译助手 — 让世界没有语言障碍</title>
+  <meta name="description" content="AI 驱动的 Chrome 翻译插件，支持全页面翻译、划词翻译和网页总结。兼容 OpenAI 协议，可自定义 API 配置。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 背景装饰 -->
+  <div class="bg-mesh" aria-hidden="true">
+    <div class="mesh-orb mesh-orb-1"></div>
+    <div class="mesh-orb mesh-orb-2"></div>
+    <div class="mesh-orb mesh-orb-3"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- 导航栏 -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="url(#logo-grad)"/>
+          <path d="M8 10h12M8 14h8M8 18h10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="4" fill="#fff"/>
+          <text x="20" y="21" text-anchor="middle" font-size="6" fill="#4f7cff" font-weight="bold">AI</text>
+          <defs>
+            <linearGradient id="logo-grad" x1="0" y1="0" x2="28" y2="28">
+              <stop stop-color="#4f7cff"/>
+              <stop offset="1" stop-color="#6366f1"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>AI 翻译助手</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">核心功能</a>
+        <a href="#install">安装指南</a>
+        <a href="#faq">常见问题</a>
+      </div>
+      <a href="#install" class="nav-cta">立即安装</a>
+      <button class="nav-toggle" id="navToggle" aria-label="菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+      <a href="#features">核心功能</a>
+      <a href="#install">安装指南</a>
+      <a href="#faq">常见问题</a>
+      <a href="#install" class="nav-cta">立即安装</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span>AI 驱动 · 兼容 OpenAI 协议</span>
+      </div>
+      <h1 class="hero-title">
+        让世界<br>
+        <span class="hero-title-accent">没有语言障碍</span>
+      </h1>
+      <p class="hero-subtitle">
+        一款轻量级 Chrome 翻译插件，集全页面翻译、划词翻译、网页总结于一体。
+        接入你自己的 AI API，隐私安全，翻译精准。
+      </p>
+      <div class="hero-actions">
+        <a href="#install" class="btn btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          免费安装使用
+        </a>
+        <a href="#features" class="btn btn-ghost">了解功能</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">12+</div>
+          <div class="stat-label">支持语言</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-num">3</div>
+          <div class="stat-label">核心功能</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">使用成本</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero 可视化：翻译演示卡片 -->
+    <div class="hero-visual">
+      <div class="demo-card">
+        <div class="demo-card-bar">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          <span class="demo-card-url">example.com</span>
+        </div>
+        <div class="demo-card-body">
+          <div class="demo-line demo-line-original">
+            <span class="demo-lang-tag">EN</span>
+            <span class="demo-text">Artificial intelligence is transforming how we communicate across languages.</span>
+          </div>
+          <div class="demo-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+          <div class="demo-line demo-line-translated">
+            <span class="demo-lang-tag demo-lang-tag-zh">中</span>
+            <span class="demo-text demo-text-translated">人工智能正在改变我们跨语言交流的方式。</span>
+          </div>
+          <div class="demo-line demo-line-original" style="margin-top:20px;">
+            <span class="demo-lang-tag">EN</span>
+            <span class="demo-text">Select any text to get instant translation.</span>
+          </div>
+          <div class="demo-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </div>
+          <div class="demo-line demo-line-translated">
+            <span class="demo-lang-tag demo-lang-tag-zh">中</span>
+            <span class="demo-text demo-text-translated">选中任意文字即可获得即时翻译。</span>
+          </div>
+        </div>
+        <div class="demo-scan-line"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 核心功能 -->
+  <section class="section" id="features">
+    <div class="section-header">
+      <div class="section-eyebrow">核心功能</div>
+      <h2 class="section-title">三种翻译模式，覆盖所有场景</h2>
+      <p class="section-desc">无论你是阅读整篇外文文章、查询单个词汇，还是需要快速了解页面要点，AI 翻译助手都能胜任。</p>
+    </div>
+
+    <div class="features-grid">
+
+      <!-- 全页面翻译 -->
+      <article class="feature-card" data-reveal>
+        <div class="feature-icon feature-icon-blue">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 5h12M9 3v2M5 9h6M5 13h8M5 17h10"/>
+            <path d="M14 14l4 4 4-4M18 8v10"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">全页面翻译</h3>
+        <p class="feature-desc">一键将整个网页内容翻译为目标语言，保持原始排版不变。支持中英互译及 12 种语言，阅读外文网站如同阅读母语。</p>
+        <div class="feature-preview">
+          <div class="preview-browser">
+            <div class="preview-browser-bar">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="preview-browser-body">
+              <div class="preview-line w-80"></div>
+              <div class="preview-line w-60"></div>
+              <div class="preview-line w-90 translate-flash"></div>
+              <div class="preview-line w-70 translate-flash" style="animation-delay:.3s"></div>
+              <div class="preview-line w-50"></div>
+              <div class="preview-line w-85 translate-flash" style="animation-delay:.6s"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 划词翻译 -->
+      <article class="feature-card" data-reveal>
+        <div class="feature-icon feature-icon-cyan">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">划词翻译</h3>
+        <p class="feature-desc">在网页中选中任意文字，自动弹出翻译结果浮窗。无需切换页面，不打断阅读节奏，即选即译。</p>
+        <div class="feature-preview">
+          <div class="preview-selection">
+            <div class="preview-text">
+              The quick brown fox jumps over the lazy dog
+            </div>
+            <div class="preview-popup">
+              <div class="preview-popup-arrow"></div>
+              <div class="preview-popup-content">敏捷的棕色狐狸跳过了懒狗</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 网页总结 -->
+      <article class="feature-card" data-reveal>
+        <div class="feature-icon feature-icon-purple">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h10"/>
+            <circle cx="19" cy="18" r="3"/>
+            <path d="M21 16l1-1"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">网页总结</h3>
+        <p class="feature-desc">AI 自动提取网页核心内容，生成结构化摘要。快速判断文章是否值得精读，节省你的宝贵时间。</p>
+        <div class="feature-preview">
+          <div class="preview-summary">
+            <div class="summary-item">
+              <span class="summary-bullet"></span>
+              <div class="summary-line w-90"></div>
+            </div>
+            <div class="summary-item">
+              <span class="summary-bullet"></span>
+              <div class="summary-line w-75"></div>
+            </div>
+            <div class="summary-item">
+              <span class="summary-bullet"></span>
+              <div class="summary-line w-85"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 安装步骤 -->
+  <section class="section section-install" id="install">
+    <div class="section-header">
+      <div class="section-eyebrow">安装指南</div>
+      <h2 class="section-title">四步开始使用</h2>
+      <p class="section-desc">无需注册，无需付费，几分钟即可完成安装配置。</p>
+    </div>
+
+    <div class="steps">
+      <div class="step" data-reveal>
+        <div class="step-number">01</div>
+        <div class="step-content">
+          <h3 class="step-title">打开扩展管理页</h3>
+          <p class="step-desc">在 Chrome 浏览器地址栏输入 <code>chrome://extensions/</code> 并回车。</p>
+        </div>
+        <div class="step-connector"></div>
+      </div>
+
+      <div class="step" data-reveal>
+        <div class="step-number">02</div>
+        <div class="step-content">
+          <h3 class="step-title">开启开发者模式</h3>
+          <p class="step-desc">在扩展管理页面右上角，打开「开发者模式」开关。</p>
+        </div>
+        <div class="step-connector"></div>
+      </div>
+
+      <div class="step" data-reveal>
+        <div class="step-number">03</div>
+        <div class="step-content">
+          <h3 class="step-title">加载扩展程序</h3>
+          <p class="step-desc">点击「加载已解压的扩展程序」，选择项目文件夹即可完成安装。</p>
+        </div>
+        <div class="step-connector"></div>
+      </div>
+
+      <div class="step" data-reveal>
+        <div class="step-number">04</div>
+        <div class="step-content">
+          <h3 class="step-title">配置 API 密钥</h3>
+          <p class="step-desc">点击工具栏图标，在弹窗中填入你的 API Key、Base URL 和模型名称，保存后即可使用。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-note">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>兼容所有 OpenAI 协议的 API 服务商，包括 DeepSeek、OpenAI、Moonshot 等。只需填入对应的 API 地址和密钥即可。</span>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-faq" id="faq">
+    <div class="section-header">
+      <div class="section-eyebrow">常见问题</div>
+      <h2 class="section-title">你可能想知道的</h2>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary class="faq-question">
+          <span>这个插件是免费的吗？</span>
+          <span class="faq-icon"></span>
+        </summary>
+        <div class="faq-answer">
+          <p>插件本身完全免费开源。翻译功能需要调用 AI API，因此会产生 API 调用费用，费用取决于你选择的服务商和模型。推荐使用 DeepSeek 等性价比高的服务商。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          <span>支持哪些 AI 服务商？</span>
+          <span class="faq-icon"></span>
+        </summary>
+        <div class="faq-answer">
+          <p>兼容所有 OpenAI 协议的 API 服务商，包括但不限于 OpenAI、DeepSeek、Moonshot（月之暗面）、智谱 AI、通义千问等。只需在设置中填入对应的 Base URL 和 API Key。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          <span>我的 API 密钥安全吗？</span>
+          <span class="faq-icon"></span>
+        </summary>
+        <div class="faq-answer">
+          <p>API 密钥仅存储在你本地浏览器的 chrome.storage 中，不会上传到任何服务器。所有翻译请求直接从你的浏览器发送到 AI 服务商，不经过第三方中转。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          <span>支持哪些语言？</span>
+          <span class="faq-icon"></span>
+        </summary>
+        <div class="faq-answer">
+          <p>支持中文、英文、日文、韩文、法文、德文、西班牙文、俄文、阿拉伯文、意大利文、葡萄牙文等 12 种语言互译，也支持自动检测源语言。</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">开始无障碍阅读</h2>
+      <p class="cta-desc">安装 AI 翻译助手，让每一篇外文内容都触手可及。</p>
+      <a href="#install" class="btn btn-primary btn-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        立即安装
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="#4f7cff"/>
+          <path d="M8 10h12M8 14h8M8 18h10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="4" fill="#fff"/>
+          <text x="20" y="21" text-anchor="middle" font-size="6" fill="#4f7cff" font-weight="bold">AI</text>
+        </svg>
+        <span>AI 翻译助手</span>
+      </div>
+      <p class="footer-text">AI 驱动的 Chrome 翻译插件 · 兼容 OpenAI 协议</p>
+      <p class="footer-copy">© 2025 AI 翻译助手 · 基于 Chrome Extension Manifest V3</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
