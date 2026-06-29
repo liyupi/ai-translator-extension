@@ -1,0 +1,178 @@
+/* ==================== AI 翻译助手 - Content Script 样式 ==================== */
+
+/* 划词翻译弹窗 */
+.ai-translator-popup {
+  position: fixed;
+  z-index: 2147483647;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e8e8e8;
+  max-width: 400px;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  animation: ai-translator-fade-in 0.2s ease;
+}
+
+@keyframes ai-translator-fade-in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ai-translator-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ai-translator-popup-close {
+  cursor: pointer;
+  font-size: 18px;
+  color: #999;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.2s;
+}
+
+.ai-translator-popup-close:hover {
+  color: #333;
+}
+
+.ai-translator-original {
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #888;
+  border-bottom: 1px solid #f5f5f5;
+  max-height: 80px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.ai-translator-translation {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.ai-translator-error {
+  color: #e53935 !important;
+}
+
+/* 加载遮罩 */
+.ai-translator-loading-overlay {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e8e8e8;
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: #333;
+  animation: ai-translator-fade-in 0.2s ease;
+}
+
+.ai-translator-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid #e0e0e0;
+  border-top-color: #4f7cff;
+  border-radius: 50%;
+  animation: ai-translator-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ai-translator-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-translator-loading-text {
+  font-weight: 500;
+}
+
+/* 网页总结面板 */
+.ai-translator-summary-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2147483647;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  border: 1px solid #e8e8e8;
+  width: 560px;
+  max-width: 90vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  animation: ai-translator-fade-in 0.25s ease;
+}
+
+.ai-translator-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.ai-translator-summary-content {
+  padding: 20px 24px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.ai-translator-summary-content h2,
+.ai-translator-summary-content h3,
+.ai-translator-summary-content h4 {
+  margin: 12px 0 6px 0;
+  color: #1a1a1a;
+}
+
+.ai-translator-summary-content h2 { font-size: 18px; }
+.ai-translator-summary-content h3 { font-size: 16px; }
+.ai-translator-summary-content h4 { font-size: 15px; }
+
+.ai-translator-summary-content ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.ai-translator-summary-content li {
+  margin: 4px 0;
+}
+
+.ai-translator-summary-content strong {
+  color: #4f7cff;
+}
+
+.ai-translator-summary-content br + br {
+  display: block;
+  margin-top: 8px;
+}
