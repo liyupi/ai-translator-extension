@@ -170,6 +170,31 @@ body {
   transform: scale(0.97);
 }
 
+/* 管理面板按钮 */
+.manage-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.manage-btn:hover {
+  background: #f0f4ff;
+  border-color: #4f7cff;
+  color: #4f7cff;
+}
+
 /* Toast 提示 */
 .toast {
   position: fixed;

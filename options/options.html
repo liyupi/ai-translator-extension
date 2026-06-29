@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 翻译助手 - 管理面板</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="app">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="#4f7cff"/>
+          <path d="M8 10h12M8 14h8M8 18h10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="4" fill="#fff"/>
+          <text x="20" y="21" text-anchor="middle" font-size="6" fill="#4f7cff" font-weight="bold">AI</text>
+        </svg>
+        <span>AI 翻译助手</span>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-tab="config">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>API 配置</span>
+        </button>
+        <button class="nav-item" data-tab="language">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+          <span>语言设置</span>
+        </button>
+        <button class="nav-item" data-tab="history">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>翻译历史</span>
+        </button>
+        <button class="nav-item" data-tab="stats">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          <span>Token 统计</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>AI 翻译助手 v1.0.0</span>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main">
+      <!-- API 配置 -->
+      <section class="tab-content active" id="tab-config">
+        <h1 class="page-title">API 配置</h1>
+        <p class="page-desc">配置 OpenAI 兼容协议的 API 信息，支持 DeepSeek、OpenAI 等服务商。</p>
+
+        <div class="card">
+          <div class="form-group">
+            <label>API Key</label>
+            <input type="password" id="opt-apiKey" placeholder="sk-..." autocomplete="off">
+            <span class="form-hint">你的 API 密钥，将安全存储在浏览器中</span>
+          </div>
+          <div class="form-group">
+            <label>Base URL</label>
+            <input type="text" id="opt-baseUrl" placeholder="https://api.deepseek.com" autocomplete="off">
+            <span class="form-hint">API 基础地址，无需包含 /v1/chat/completions</span>
+          </div>
+          <div class="form-group">
+            <label>模型名称</label>
+            <input type="text" id="opt-model" placeholder="deepseek-v4-flash" autocomplete="off">
+            <span class="form-hint">使用的模型标识符</span>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-secondary" id="opt-testBtn">测试连接</button>
+            <button class="btn btn-primary" id="opt-saveBtn">保存配置</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 语言设置 -->
+      <section class="tab-content" id="tab-language">
+        <h1 class="page-title">语言设置</h1>
+        <p class="page-desc">设置翻译的源语言和目标语言，选择"自动检测"将自动判断文本语言。</p>
+
+        <div class="card">
+          <div class="lang-row">
+            <div class="form-group flex-1">
+              <label>源语言</label>
+              <select id="opt-sourceLanguage">
+                <option value="auto">自动检测</option>
+                <option value="zh">中文</option>
+                <option value="en">英文</option>
+                <option value="ja">日文</option>
+                <option value="ko">韩文</option>
+                <option value="fr">法文</option>
+                <option value="de">德文</option>
+                <option value="es">西班牙文</option>
+                <option value="ru">俄文</option>
+                <option value="ar">阿拉伯文</option>
+                <option value="it">意大利文</option>
+                <option value="pt">葡萄牙文</option>
+              </select>
+            </div>
+            <div class="lang-swap">
+              <button id="langSwapBtn" title="交换语言">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3l4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/></svg>
+              </button>
+            </div>
+            <div class="form-group flex-1">
+              <label>目标语言</label>
+              <select id="opt-targetLanguage">
+                <option value="auto">自动检测（中英互译）</option>
+                <option value="zh">中文</option>
+                <option value="en">英文</option>
+                <option value="ja">日文</option>
+                <option value="ko">韩文</option>
+                <option value="fr">法文</option>
+                <option value="de">德文</option>
+                <option value="es">西班牙文</option>
+                <option value="ru">俄文</option>
+                <option value="ar">阿拉伯文</option>
+                <option value="it">意大利文</option>
+                <option value="pt">葡萄牙文</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="lang-saveBtn">保存语言设置</button>
+          </div>
+        </div>
+
+        <div class="card info-card">
+          <div class="info-icon">💡</div>
+          <div>
+            <strong>使用提示</strong>
+            <ul>
+              <li>源语言和目标语言都设为"自动检测"时，将自动进行中英互译</li>
+              <li>指定源语言可以提高翻译准确性和速度</li>
+              <li>点击中间的交换按钮可以快速交换源语言和目标语言</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 翻译历史 -->
+      <section class="tab-content" id="tab-history">
+        <h1 class="page-title">翻译历史</h1>
+        <p class="page-desc">查看最近的翻译记录，最多保存 500 条。</p>
+
+        <div class="history-toolbar">
+          <select id="history-filter">
+            <option value="all">全部类型</option>
+            <option value="selection">划词翻译</option>
+            <option value="page">全页面翻译</option>
+            <option value="summary">网页总结</option>
+          </select>
+          <button class="btn btn-danger-outline" id="clearHistoryBtn">清空历史</button>
+        </div>
+
+        <div class="history-list" id="historyList">
+          <div class="empty-state">暂无翻译记录</div>
+        </div>
+
+        <div class="pagination" id="historyPagination" style="display:none;">
+          <button class="btn btn-secondary" id="prevPageBtn">上一页</button>
+          <span id="pageInfo">第 1 页</span>
+          <button class="btn btn-secondary" id="nextPageBtn">下一页</button>
+        </div>
+      </section>
+
+      <!-- Token 统计 -->
+      <section class="tab-content" id="tab-stats">
+        <h1 class="page-title">Token 消耗统计</h1>
+        <p class="page-desc">查看 API 调用的 Token 使用情况。</p>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-total-tokens">0</div>
+              <div class="stat-label">总 Token 消耗</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-total-calls">0</div>
+              <div class="stat-label">API 调用次数</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-prompt-tokens">0</div>
+              <div class="stat-label">输入 Token</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-completion-tokens">0</div>
+              <div class="stat-label">输出 Token</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">按功能分类统计</h2>
+          <div class="stats-by-type" id="statsByType">
+            <div class="empty-state">暂无统计数据</div>
+          </div>
+        </div>
+
+        <div class="form-actions" style="margin-top:16px;">
+          <button class="btn btn-danger-outline" id="clearStatsBtn">清空统计数据</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>

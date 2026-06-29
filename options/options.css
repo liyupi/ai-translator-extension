@@ -1,0 +1,531 @@
+/* ==================== AI 翻译助手 - 管理面板样式 ==================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ==================== 侧边栏 ==================== */
+
+.sidebar {
+  width: 240px;
+  background: #fff;
+  border-right: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.nav {
+  flex: 1;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: #f5f7ff;
+  color: #4f7cff;
+}
+
+.nav-item.active {
+  background: #4f7cff;
+  color: #fff;
+}
+
+.nav-item svg {
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  font-size: 12px;
+  color: #aaa;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* ==================== 主内容区 ==================== */
+
+.main {
+  flex: 1;
+  margin-left: 240px;
+  padding: 32px 40px;
+  max-width: 900px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.page-desc {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+/* ==================== 卡片 ==================== */
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e8e8e8;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* ==================== 表单 ==================== */
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  background: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4f7cff;
+  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.1);
+}
+
+.form-hint {
+  display: block;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* ==================== 按钮 ==================== */
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: #4f7cff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #3a63d8;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.btn-danger-outline {
+  background: #fff;
+  color: #e53935;
+  border: 1px solid #e53935;
+}
+
+.btn-danger-outline:hover {
+  background: #fef0f0;
+}
+
+/* ==================== 语言设置 ==================== */
+
+.lang-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.lang-swap {
+  padding-bottom: 10px;
+}
+
+.lang-swap button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.lang-swap button:hover {
+  background: #f0f4ff;
+  border-color: #4f7cff;
+  color: #4f7cff;
+}
+
+.info-card {
+  display: flex;
+  gap: 14px;
+  background: #f0f7ff;
+  border-color: #d0e3ff;
+}
+
+.info-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.info-card ul {
+  margin: 6px 0 0 16px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.8;
+}
+
+/* ==================== 翻译历史 ==================== */
+
+.history-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.history-toolbar select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-item {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+
+.history-item:hover {
+  border-color: #c5d5ff;
+}
+
+.history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.history-type-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.history-type-badge.selection {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.history-type-badge.page {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.history-type-badge.summary {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.history-time {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.history-original {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.history-translated {
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.history-lang {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 6px;
+}
+
+/* 分页 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.pagination span {
+  font-size: 14px;
+  color: #666;
+}
+
+/* ==================== Token 统计 ==================== */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e8e8e8;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon-blue { background: #e3f2fd; color: #1565c0; }
+.stat-icon-green { background: #e8f5e9; color: #2e7d32; }
+.stat-icon-orange { background: #fff3e0; color: #e65100; }
+.stat-icon-purple { background: #f3e5f5; color: #7b1fa2; }
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.stats-by-type {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-type-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-type-label {
+  width: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.stat-type-bar {
+  flex: 1;
+  height: 28px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-type-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.stat-type-bar-fill.selection { background: #4caf50; }
+.stat-type-bar-fill.page { background: #2196f3; }
+.stat-type-bar-fill.summary { background: #ff9800; }
+
+.stat-type-count {
+  width: 80px;
+  text-align: right;
+  font-size: 13px;
+  color: #666;
+}
+
+/* ==================== 空状态 ==================== */
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #bbb;
+  font-size: 14px;
+}
+
+/* ==================== Tab 切换 ==================== */
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ==================== Toast ==================== */
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { background: #4caf50; }
+.toast.error { background: #e53935; }
+.toast.info { background: #4f7cff; }

@@ -5,7 +5,24 @@ const DEFAULT_SETTINGS = {
   apiKey: '',
   baseUrl: 'https://api.deepseek.com',
   model: 'deepseek-v4-flash',
+  sourceLanguage: 'auto',
   targetLanguage: 'auto'
+};
+
+// 语言映射
+const LANGUAGE_MAP = {
+  'auto': '自动检测',
+  'zh': '中文',
+  'en': '英文',
+  'ja': '日文',
+  'ko': '韩文',
+  'fr': '法文',
+  'de': '德文',
+  'es': '西班牙文',
+  'ru': '俄文',
+  'ar': '阿拉伯文',
+  'it': '意大利文',
+  'pt': '葡萄牙文'
 };
 
 // 获取设置
@@ -22,7 +39,27 @@ function getApiUrl(baseUrl) {
   return `${base}/v1/chat/completions`;
 }
 
-// 调用 AI API（OpenAI 兼容协议）
+// 构造翻译系统提示词
+function buildTranslatePrompt(sourceLang, targetLang) {
+  const sourceName = LANGUAGE_MAP[sourceLang] || '自动检测';
+  const targetName = LANGUAGE_MAP[targetLang] || '中文';
+
+  if (sourceLang === 'auto' && targetLang === 'auto') {
+    return '你是一个专业翻译助手。请将用户提供的文本翻译成目标语言。如果文本是中文，翻译成英文；如果是英文或其他语言，翻译成中文。只返回翻译结果，不要添加任何解释或额外内容。';
+  }
+
+  if (sourceLang === 'auto') {
+    return `你是一个专业翻译助手。请将用户提供的文本翻译成${targetName}。只返回翻译结果，不要添加任何解释或额外内容。`;
+  }
+
+  if (targetLang === 'auto') {
+    return `你是一个专业翻译助手。请将用户提供的${sourceName}文本翻译成中文（如果原文是中文则翻译成英文）。只返回翻译结果，不要添加任何解释或额外内容。`;
+  }
+
+  return `你是一个专业翻译助手。请将用户提供的${sourceName}文本翻译成${targetName}。只返回翻译结果，不要添加任何解释或额外内容。`;
+}
+
+// 调用 AI API（OpenAI 兼容协议），返回内容和 token 用量
 async function callAI(messages, settings) {
   const url = getApiUrl(settings.baseUrl);
   const response = await fetch(url, {
@@ -58,7 +95,61 @@ async function callAI(messages, settings) {
   if (!content || content.trim() === '') {
     throw new Error('API返回了空内容，请检查模型配置或增加 max_tokens');
   }
-  return content;
+
+  // 提取 token 用量
+  const usage = data.usage || {};
+  return {
+    content: content,
+    usage: {
+      prompt_tokens: usage.prompt_tokens || 0,
+      completion_tokens: usage.completion_tokens || 0,
+      total_tokens: usage.total_tokens || 0
+    }
+  };
+}
+
+// ==================== 翻译历史 & Token 统计 ====================
+
+// 记录翻译历史
+async function recordHistory(entry) {
+  const data = await chrome.storage.local.get({ translationHistory: [] });
+  const history = data.translationHistory;
+  history.unshift({
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    ...entry
+  });
+  // 最多保留 500 条
+  if (history.length > 500) {
+    history.length = 500;
+  }
+  await chrome.storage.local.set({ translationHistory: history });
+}
+
+// 记录 Token 消耗
+async function recordTokenUsage(usage, type) {
+  const data = await chrome.storage.local.get({
+    tokenStats: {
+      total: { prompt: 0, completion: 0, total: 0, count: 0 },
+      byType: {}
+    }
+  });
+  const stats = data.tokenStats;
+
+  stats.total.prompt += usage.prompt_tokens;
+  stats.total.completion += usage.completion_tokens;
+  stats.total.total += usage.total_tokens;
+  stats.total.count += 1;
+
+  if (!stats.byType[type]) {
+    stats.byType[type] = { prompt: 0, completion: 0, total: 0, count: 0 };
+  }
+  stats.byType[type].prompt += usage.prompt_tokens;
+  stats.byType[type].completion += usage.completion_tokens;
+  stats.byType[type].total += usage.total_tokens;
+  stats.byType[type].count += 1;
+
+  await chrome.storage.local.set({ tokenStats: stats });
 }
 
 // ==================== 右键菜单 ====================
@@ -80,17 +171,27 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
     chrome.tabs.sendMessage(tab.id, { action: 'selectionTranslating' });
     try {
+      const systemPrompt = buildTranslatePrompt(settings.sourceLanguage, settings.targetLanguage);
       const messages = [
-        {
-          role: 'system',
-          content: '你是一个专业翻译助手。请将用户提供的文本翻译成目标语言。如果文本是中文，翻译成英文；如果是英文或其他语言，翻译成中文。只返回翻译结果，不要添加任何解释或额外内容。'
-        },
+        { role: 'system', content: systemPrompt },
         { role: 'user', content: info.selectionText }
       ];
-      const result = await callAI(messages, settings);
+      const aiResult = await callAI(messages, settings);
+      const result = aiResult.content.trim();
+
+      // 记录历史和 token
+      await recordHistory({
+        type: 'selection',
+        original: info.selectionText,
+        translated: result,
+        sourceLanguage: settings.sourceLanguage,
+        targetLanguage: settings.targetLanguage
+      });
+      await recordTokenUsage(aiResult.usage, 'selection');
+
       chrome.tabs.sendMessage(tab.id, {
         action: 'showTranslation',
-        translation: result.trim(),
+        translation: result,
         original: info.selectionText
       });
     } catch (error) {
@@ -121,6 +222,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     handleTestConnection(sendResponse);
     return true;
   }
+
+  if (request.action === 'getHistory') {
+    handleGetHistory(request, sendResponse);
+    return true;
+  }
+
+  if (request.action === 'clearHistory') {
+    handleClearHistory(sendResponse);
+    return true;
+  }
+
+  if (request.action === 'getTokenStats') {
+    handleGetTokenStats(sendResponse);
+    return true;
+  }
+
+  if (request.action === 'clearTokenStats') {
+    handleClearTokenStats(sendResponse);
+    return true;
+  }
 });
 
 // 划词翻译
@@ -131,15 +252,25 @@ async function handleTranslateText(request, sendResponse) {
       sendResponse({ error: '请先在插件设置中配置 API Key' });
       return;
     }
+    const systemPrompt = buildTranslatePrompt(settings.sourceLanguage, settings.targetLanguage);
     const messages = [
-      {
-        role: 'system',
-        content: '你是一个专业翻译助手。请将用户提供的文本翻译成目标语言。如果文本是中文，翻译成英文；如果是英文或其他语言，翻译成中文。只返回翻译结果，不要添加任何解释或额外内容。'
-      },
+      { role: 'system', content: systemPrompt },
       { role: 'user', content: request.text }
     ];
-    const result = await callAI(messages, settings);
-    sendResponse({ result: result.trim() });
+    const aiResult = await callAI(messages, settings);
+    const result = aiResult.content.trim();
+
+    // 记录历史和 token
+    await recordHistory({
+      type: 'selection',
+      original: request.text,
+      translated: result,
+      sourceLanguage: settings.sourceLanguage,
+      targetLanguage: settings.targetLanguage
+    });
+    await recordTokenUsage(aiResult.usage, 'selection');
+
+    sendResponse({ result: result });
   } catch (error) {
     sendResponse({ error: error.message });
   }
@@ -157,8 +288,18 @@ async function handleTranslateBatch(request, sendResponse) {
     const texts = request.texts;
     const delimiter = '\n@@@DELIM@@@\n';
 
+    const sourceName = LANGUAGE_MAP[settings.sourceLanguage] || '自动检测';
+    const targetName = LANGUAGE_MAP[settings.targetLanguage] || '中文';
+    const langRule = settings.sourceLanguage === 'auto' && settings.targetLanguage === 'auto'
+      ? '如果文本是中文，翻译成英文；如果是英文或其他语言，翻译成中文'
+      : settings.sourceLanguage === 'auto'
+        ? `将文本翻译成${targetName}`
+        : settings.targetLanguage === 'auto'
+          ? `将${sourceName}文本翻译成中文（如果原文是中文则翻译成英文）`
+          : `将${sourceName}文本翻译成${targetName}`;
+
     const prompt = `请翻译以下文本段落。规则：
-1. 如果文本是中文，翻译成英文；如果是英文或其他语言，翻译成中文
+1. ${langRule}
 2. 保持每段翻译的顺序与原文一致
 3. 段落之间用 "@@@DELIM@@@" 分隔
 4. 只返回翻译结果，不要添加序号、解释或任何额外内容
@@ -174,32 +315,44 @@ ${texts.join(delimiter)}`;
       },
       { role: 'user', content: prompt }
     ];
-    const result = await callAI(messages, settings);
+    const aiResult = await callAI(messages, settings);
+    const result = aiResult.content;
+
+    // 记录 token
+    await recordTokenUsage(aiResult.usage, 'page');
 
     // 按分隔符拆分翻译结果
     let translations = result.split(/@@@DELIM@@@/).map(t => t.trim());
 
     // 如果拆分数量不匹配，尝试其他方式
     if (translations.length !== texts.length) {
-      // 尝试按换行分割（每段翻译一行）
       translations = result.split('\n').filter(t => t.trim()).map(t => t.trim());
     }
 
     if (translations.length !== texts.length) {
-      // 如果还是不匹配，逐条翻译作为兜底
+      // 逐条翻译作为兜底
       translations = [];
       for (const text of texts) {
+        const singleSystemPrompt = buildTranslatePrompt(settings.sourceLanguage, settings.targetLanguage);
         const singleMessages = [
-          {
-            role: 'system',
-            content: '你是一个专业翻译助手。如果文本是中文，翻译成英文；如果是英文或其他语言，翻译成中文。只返回翻译结果。'
-          },
+          { role: 'system', content: singleSystemPrompt },
           { role: 'user', content: text }
         ];
         const singleResult = await callAI(singleMessages, settings);
-        translations.push(singleResult.trim());
+        translations.push(singleResult.content.trim());
+        await recordTokenUsage(singleResult.usage, 'page');
       }
     }
+
+    // 记录历史
+    await recordHistory({
+      type: 'page',
+      original: texts.slice(0, 3).join(' | ') + (texts.length > 3 ? ' ...' : ''),
+      translated: translations.slice(0, 3).join(' | ') + (translations.length > 3 ? ' ...' : ''),
+      sourceLanguage: settings.sourceLanguage,
+      targetLanguage: settings.targetLanguage,
+      segmentCount: texts.length
+    });
 
     sendResponse({ result: translations });
   } catch (error) {
@@ -226,8 +379,20 @@ async function handleSummarize(request, sendResponse) {
         content: `请总结以下网页内容：\n\n标题：${request.title}\n\n内容：\n${request.content}`
       }
     ];
-    const result = await callAI(messages, settings);
-    sendResponse({ result: result.trim() });
+    const aiResult = await callAI(messages, settings);
+    const result = aiResult.content.trim();
+
+    // 记录历史和 token
+    await recordHistory({
+      type: 'summary',
+      original: request.title,
+      translated: result.substring(0, 200) + (result.length > 200 ? '...' : ''),
+      sourceLanguage: 'auto',
+      targetLanguage: 'zh'
+    });
+    await recordTokenUsage(aiResult.usage, 'summary');
+
+    sendResponse({ result: result });
   } catch (error) {
     sendResponse({ error: error.message });
   }
@@ -244,9 +409,61 @@ async function handleTestConnection(sendResponse) {
     const messages = [
       { role: 'user', content: '请回复"连接成功"四个字' }
     ];
-    const result = await callAI(messages, settings);
-    sendResponse({ result: result.trim() });
+    const aiResult = await callAI(messages, settings);
+    sendResponse({ result: aiResult.content.trim() });
   } catch (error) {
     sendResponse({ error: error.message });
   }
+}
+
+// ==================== 历史记录管理 ====================
+
+async function handleGetHistory(request, sendResponse) {
+  const data = await chrome.storage.local.get({ translationHistory: [] });
+  let history = data.translationHistory;
+
+  // 按类型过滤
+  if (request.type && request.type !== 'all') {
+    history = history.filter(h => h.type === request.type);
+  }
+
+  // 分页
+  const page = request.page || 1;
+  const pageSize = request.pageSize || 20;
+  const start = (page - 1) * pageSize;
+  const paged = history.slice(start, start + pageSize);
+
+  sendResponse({
+    history: paged,
+    total: history.length,
+    page: page,
+    pageSize: pageSize
+  });
+}
+
+async function handleClearHistory(sendResponse) {
+  await chrome.storage.local.set({ translationHistory: [] });
+  sendResponse({ ok: true });
+}
+
+// ==================== Token 统计管理 ====================
+
+async function handleGetTokenStats(sendResponse) {
+  const data = await chrome.storage.local.get({
+    tokenStats: {
+      total: { prompt: 0, completion: 0, total: 0, count: 0 },
+      byType: {}
+    }
+  });
+  sendResponse({ stats: data.tokenStats });
+}
+
+async function handleClearTokenStats(sendResponse) {
+  await chrome.storage.local.set({
+    tokenStats: {
+      total: { prompt: 0, completion: 0, total: 0, count: 0 },
+      byType: {}
+    }
+  });
+  sendResponse({ ok: true });
 }

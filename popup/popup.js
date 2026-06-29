@@ -134,6 +134,9 @@ testBtn.addEventListener('click', testConnection);
 translatePageBtn.addEventListener('click', translateFullPage);
 restoreBtn.addEventListener('click', restorePage);
 summarizeBtn.addEventListener('click', summarizePage);
+document.getElementById('manageBtn').addEventListener('click', () => {
+  chrome.runtime.openOptionsPage();
+});
 
 // 初始化
 loadSettings();
