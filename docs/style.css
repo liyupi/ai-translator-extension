@@ -184,6 +184,16 @@ code {
 .nav-links a:hover { color: var(--text-primary); }
 .nav-links a:hover::after { width: 100%; }
 
+.nav-github {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.nav-github:hover { color: var(--text-primary); }
+.nav-github::after { display: none; }
+
 .nav-cta {
   background: var(--gradient-primary);
   color: #fff;
@@ -280,6 +290,7 @@ code {
 }
 
 .btn-lg { padding: 16px 36px; font-size: 1rem; }
+.btn-sm { padding: 9px 18px; font-size: 0.8125rem; border-radius: 10px; }
 
 /* ---------- Hero ---------- */
 .hero {
